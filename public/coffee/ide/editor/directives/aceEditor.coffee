@@ -30,6 +30,7 @@ define [
 				autoComplete: "="
 				sharejsDoc: "="
 				spellCheckLanguage: "="
+				spellCheckEnabled: "="
 				highlights: "="
 				text: "="
 				readOnly: "="
