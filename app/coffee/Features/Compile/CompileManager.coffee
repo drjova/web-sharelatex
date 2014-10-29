@@ -49,6 +49,9 @@ module.exports = CompileManager =
 				callback null, {
 					timeout: owner.features?.compileTimeout || Settings.defaultFeatures.compileTimeout
 					compileGroup: owner.features?.compileGroup || Settings.defaultFeatures.compileGroup
+					processes: owner.features?.compileProcesses || Settings.defaultFeatures.compileProcesses
+					cpu_shares: owner.features?.compileCpuShares || Settings.defaultFeatures.compileCpuShares
+					memory: owner.features?.compileMemory || Settings.defaultFeatures.compileMemory
 				}
 
 	getLogLines: (project_id, callback)->

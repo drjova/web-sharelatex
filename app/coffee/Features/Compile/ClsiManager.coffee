@@ -8,11 +8,11 @@ logger = require "logger-sharelatex"
 url = require("url")
 
 module.exports = ClsiManager =
-	sendRequest: (project_id, settingsOverride = {}, callback = (error, success, outputFiles, output) ->) ->
-		ClsiManager._buildRequest project_id, settingsOverride, (error, req) ->
+	sendRequest: (project_id, options = {}, callback = (error, success, outputFiles, output) ->) ->
+		ClsiManager._buildRequest project_id, options, (error, req) ->
 			return callback(error) if error?
 			logger.log project_id: project_id, "sending compile to CLSI"
-			ClsiManager._postToClsi project_id, req, settingsOverride.compiler, (error, response) ->
+			ClsiManager._postToClsi project_id, req, options.compileGroup, (error, response) ->
 				return callback(error) if error?
 				logger.log project_id: project_id, response: response, "received compile response from CLSI"
 				callback(
@@ -59,13 +59,16 @@ module.exports = ClsiManager =
 		return outputFiles
 
 	VALID_COMPILERS: ["pdflatex", "latex", "xelatex", "lualatex", "python"]
-	_buildRequest: (project_id, settingsOverride={}, callback = (error, request) ->) ->
+	_buildRequest: (project_id, options={}, callback = (error, request) ->) ->
 		Project.findById project_id, {compiler: 1, rootDoc_id: 1}, (error, project) ->
 			return callback(error) if error?
 			return callback(new Errors.NotFoundError("project does not exist: #{project_id}")) if !project?
 
-			if project.compiler not in ClsiManager.VALID_COMPILERS
-				project.compiler = "pdflatex"
+			compiler = project.compiler
+			if options.compiler?
+				compiler = options.compiler
+			if compiler not in ClsiManager.VALID_COMPILERS
+				compiler = "pdflatex"
 
 			ProjectEntityHandler.getAllDocs project_id, (error, docs = {}) ->
 				return callback(error) if error?
@@ -83,7 +86,7 @@ module.exports = ClsiManager =
 							content: doc.lines.join("\n")
 						if project.rootDoc_id? and doc._id.toString() == project.rootDoc_id.toString()
 							rootResourcePath = path
-						if settingsOverride.rootDoc_id? and doc._id.toString() == settingsOverride.rootDoc_id.toString()
+						if options.rootDoc_id? and doc._id.toString() == options.rootDoc_id.toString()
 							rootResourcePathOverride = path
 
 					rootResourcePath = rootResourcePathOverride if rootResourcePathOverride?
@@ -101,8 +104,8 @@ module.exports = ClsiManager =
 						callback null, {
 							compile:
 								options:
-									compiler: project.compiler
-									timeout: settingsOverride.timeout
+									compiler: compiler
+									timeout: options.timeout
 								rootResourcePath: rootResourcePath
 								resources: resources
 						}

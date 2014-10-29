@@ -25,7 +25,7 @@ module.exports = CompileController =
 			if req.body?.compiler
 				options.compiler = req.body.compiler
 			logger.log {options, project_id}, "got compile request"
-			CompileManager.compile project_id, user_id, options, (error, status, outputFiles) ->
+			CompileManager.compile project_id, user_id, options, (error, status, outputFiles, output) ->
 				return next(error) if error?
 				res.contentType("application/json")
 				res.send 200, JSON.stringify {

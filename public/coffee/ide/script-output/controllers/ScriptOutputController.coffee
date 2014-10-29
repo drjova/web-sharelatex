@@ -15,8 +15,8 @@ define [
 				.post(url, {
 					_csrf: window.csrfToken
 					# Always compile the open doc in this case
-					settingsOverride:
-						rootDoc_id: $scope.editor.open_doc_id
+					rootDoc_id: $scope.editor.open_doc_id
+					compiler: "python"
 				})
 				.success (data) ->
 					$scope.running = false
