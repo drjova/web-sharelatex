@@ -40,6 +40,7 @@ describe "ClsiManager", ->
 							url: "#{@settings.apis.clsi.url}/project/#{@project_id}/output/output.log"
 							type: "log"
 						}]
+						output: @output = "mock output"
 				})
 				@ClsiManager.sendRequest @project_id, {compiler:"standard"}, @callback
 
@@ -61,7 +62,7 @@ describe "ClsiManager", ->
 					path: "output.log"
 					type: "log"
 				}]
-				@callback.calledWith(null, @status, outputFiles).should.equal true
+				@callback.calledWith(null, @status, outputFiles, @output).should.equal true
 
 		describe "with a failed compile", ->
 			beforeEach ->

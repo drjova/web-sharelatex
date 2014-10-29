@@ -8,6 +8,7 @@ define [
 			@$scope.editor = {
 				sharejs_doc: null
 				open_doc_id: null
+				open_doc: null
 				opening: true
 			}
 
@@ -43,7 +44,8 @@ define [
 				return
 
 			@$scope.editor.open_doc_id = doc.id
-
+			@$scope.editor.open_doc = doc
+			
 			$.localStorage "doc.open_id.#{@$scope.project_id}", doc.id
 			@ide.fileTreeManager.selectEntity(doc)
 

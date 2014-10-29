@@ -31,6 +31,7 @@ module.exports = CompileController =
 				res.send 200, JSON.stringify {
 					status: status
 					outputFiles: outputFiles
+					output: output
 				}
 
 	downloadPdf: (req, res, next = (error) ->)->

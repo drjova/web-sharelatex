@@ -3,7 +3,7 @@ logger = require('logger-sharelatex')
 _ = require('underscore')
 settings = require("settings-sharelatex")
 
-safeCompilers = ["xelatex", "pdflatex", "latex", "lualatex"]
+safeCompilers = ["xelatex", "pdflatex", "latex", "lualatex", "python"]
 
 module.exports = 
 	setCompiler : (project_id, compiler, callback = ()->)->

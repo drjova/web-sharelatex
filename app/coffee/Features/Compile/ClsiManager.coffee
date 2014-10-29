@@ -8,7 +8,7 @@ logger = require "logger-sharelatex"
 url = require("url")
 
 module.exports = ClsiManager =
-	sendRequest: (project_id, settingsOverride = {}, callback = (error, success) ->) ->
+	sendRequest: (project_id, settingsOverride = {}, callback = (error, success, outputFiles, output) ->) ->
 		ClsiManager._buildRequest project_id, settingsOverride, (error, req) ->
 			return callback(error) if error?
 			logger.log project_id: project_id, "sending compile to CLSI"
@@ -19,6 +19,7 @@ module.exports = ClsiManager =
 					null
 					response?.compile?.status
 					ClsiManager._parseOutputFiles(project_id, response?.compile?.outputFiles)
+					response?.compile?.output
 				)
 
 	getLogLines: (project_id, callback = (error, lines) ->) ->
@@ -57,7 +58,7 @@ module.exports = ClsiManager =
 				type: file.type
 		return outputFiles
 
-	VALID_COMPILERS: ["pdflatex", "latex", "xelatex", "lualatex"]
+	VALID_COMPILERS: ["pdflatex", "latex", "xelatex", "lualatex", "python"]
 	_buildRequest: (project_id, settingsOverride={}, callback = (error, request) ->) ->
 		Project.findById project_id, {compiler: 1, rootDoc_id: 1}, (error, project) ->
 			return callback(error) if error?

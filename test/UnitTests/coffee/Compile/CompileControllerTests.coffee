@@ -70,6 +70,7 @@ describe "CompileController", ->
 				@res.body.should.equal JSON.stringify({
 					status: @status
 					outputFiles: @outputFiles
+					output: @output
 				})
 
 		describe "when an auto compile", ->
