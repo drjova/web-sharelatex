@@ -1,0 +1,5 @@
+div(ng-if="editor.open_doc.name == 'main.py'")
+	include ./script_output
+	
+div(ng-if="editor.open_doc.name != 'main.py'")
+	include ./pdf
