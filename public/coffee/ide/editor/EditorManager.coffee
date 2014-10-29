@@ -10,6 +10,8 @@ define [
 				open_doc_id: null
 				open_doc: null
 				opening: true
+				editor_mode: null
+				ace_mode: null
 			}
 
 			@$scope.$on "entity:selected", (event, entity) =>
@@ -45,6 +47,8 @@ define [
 
 			@$scope.editor.open_doc_id = doc.id
 			@$scope.editor.open_doc = doc
+			@$scope.editor.editor_mode = @_getEditorModeFromDoc(doc)
+			@$scope.editor.ace_mode = @_getAceModeFromDoc(doc)
 			
 			$.localStorage "doc.open_id.#{@$scope.project_id}", doc.id
 			@ide.fileTreeManager.selectEntity(doc)
@@ -95,6 +99,18 @@ define [
 
 		_unbindFromDocumentEvents: (document) ->
 			document.off()
+			
+		_getEditorModeFromDoc: (doc) ->
+			if doc.name.match(/\.py$/)
+				return "script"
+			else
+				return "latex"
+				
+		_getAceModeFromDoc: (doc) ->
+			if doc.name.match(/\.py$/)
+				return "python"
+			else
+				return "latex"
 
 		getCurrentDocValue: () ->
 			@$scope.editor.sharejs_doc?.getSnapshot()

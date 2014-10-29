@@ -34,8 +34,9 @@ define [
 				text: "="
 				readOnly: "="
 				annotations: "="
-				navigateHighlights: "=",
+				navigateHighlights: "="
 				onCtrlEnter: "="
+				aceMode: "="
 			}
 			link: (scope, element, attrs) ->
 				# Don't freak out if we're already in an apply callback
@@ -154,7 +155,12 @@ define [
 						editor.setValue(text, -1)
 						session = editor.getSession()
 						session.setUseWrapMode(true)
-						session.setMode("ace/mode/latex")
+						session.setMode("ace/mode/#{scope.aceMode}")
+						
+				scope.$watch "aceMode", (mode) ->
+					if mode?
+						session = editor.getSession()
+						session.setMode("ace/mode/#{mode}")
 
 				scope.$watch "annotations", (annotations) ->
 					session = editor.getSession()
@@ -168,7 +174,7 @@ define [
 				resetSession = () ->
 					session = editor.getSession()
 					session.setUseWrapMode(true)
-					session.setMode("ace/mode/latex")
+					session.setMode("ace/mode/#{scope.aceMode}")
 					session.setAnnotations scope.annotations
 
 

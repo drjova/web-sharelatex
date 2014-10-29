@@ -14,6 +14,9 @@ define [
 			$http
 				.post(url, {
 					_csrf: window.csrfToken
+					# Always compile the open doc in this case
+					settingsOverride:
+						rootDoc_id: $scope.editor.open_doc_id
 				})
 				.success (data) ->
 					$scope.running = false
@@ -36,5 +39,4 @@ define [
 				if extension in ["png", "jpg", "jpeg", "svg", "gif"]
 					file.type = "image"
 					
-				console.log "FILE", file
 				return file
