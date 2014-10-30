@@ -22,7 +22,7 @@ define [
 			doCompile(rootDoc_id, compiler)
 				.success (data) ->
 					$scope.running = false
-					$scope.files = parseOutputFiles(data?.outputFiles)
+					$scope.files = parseAndLoadOutputFiles(data?.outputFiles)
 					$scope.output = data?.output
 					
 				.error () ->
@@ -39,17 +39,62 @@ define [
 					compiler: compiler
 				})
 					
-		parseOutputFiles = (files = []) ->
-			return files.map (file) ->
+		parseAndLoadOutputFiles = (files = []) ->
+			files = files.map (file) ->
 				file.url = "/project/#{$scope.project_id}/output/#{file.path}?cache_bust=#{Date.now()}"
 				file.type = "unknown"
 				parts = file.path.split(".")
 				if parts.length == 1
 					extension = null
 				else
-					extension = parts[parts.length - 1]
+					extension = parts[parts.length - 1].toLowerCase()
 				if extension in ["png", "jpg", "jpeg", "svg", "gif"]
 					file.type = "image"
 				else if extension in ["pdf"]
 					file.type = "pdf"
+				else if extension in ["rout"]
+					file.type = "text"
+					
+				if file.type == "text"
+					loadOutputFile(file)
+					
 				return file
+				
+			return sortOutputFiles(files)
+			
+		loadOutputFile = (file) ->
+			file.loading = true
+			$http.get(file.url)
+				.success (content) ->
+					file.loading = false
+					file.content = content
+			
+		sortOutputFiles = (files = []) ->
+			priorities = {
+				"rout": 1
+				"png": 2
+				"jpg": 2
+				"jpeg": 2
+				"gif": 2
+				"svg": 2
+				"pdf": 2
+			}
+			return files.sort (a, b) ->
+				# Sort first by extension
+				extA = a.path.split(".").pop()?.toLowerCase()
+				extB = b.path.split(".").pop()?.toLowerCase()
+				priorityA = priorities[extA] or 100
+				priorityB = priorities[extB] or 100
+				result = (priorityA - priorityB)
+				
+				# Then name
+				if result == 0
+					if a.name > b.name
+						result = -1
+					else if a.name < b.name
+						result = 1
+				
+				return result
+						
+						
+				
