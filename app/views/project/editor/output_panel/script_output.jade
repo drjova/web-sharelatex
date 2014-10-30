@@ -5,21 +5,20 @@ div.full-size(ng-controller="ScriptOutputController")
 			ng-disabled="running",
 			ng-click="run()"
 		)
-			i.fa.fa-refresh(
-				ng-class="{'fa-spin': running }"
+			i.fa.fa-fw(
+				ng-class="{'fa-refresh fa-spin': running, 'fa-play': !running }"
 			)
 			| &nbsp;&nbsp;
 			span(ng-show="!running") #{translate("run")}
 			span(ng-show="running") #{translate("running")}...
 			
 	div.script-output
-		pre.output.row-spaced(ng-if="output.stdout && output.stdout != ''") {{ output.stdout }}
+		pre.output.stdout.row-spaced-small(ng-if="output.stdout && output.stdout != ''") {{ output.stdout }}
 		
-		pre.output.row-spaced.text-danger(ng-if="output.stderr && output.stderr != ''") {{ output.stderr }}
+		pre.output.stderr.row-spaced-small(ng-if="output.stderr && output.stderr != ''") {{ output.stderr }}
 		
-		.card.card-thin.row-spaced-small(ng-repeat="file in files")
-			.page-header
-				strong {{ file.path }}
+		.output-file.card.card-thin.row-spaced-small(ng-repeat="file in files")
+			.page-header.output-file-page-header {{ file.path }}
 			img(ng-if="file.type == 'image'", ng-src="{{file.url}}")
-			p.text-center(ng-if="file.type != 'image'")
+			p.output-file-download-link.text-center(ng-if="file.type != 'image'")
 				a(ng-href="{{file.url}}", target="_blank") Download

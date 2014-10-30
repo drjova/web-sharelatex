@@ -2,14 +2,16 @@ define [
 	"base"
 ], (App) ->
 	App.controller "ScriptOutputController", ($scope, $http, ide) ->
-		$scope.files = []
-		$scope.output = {}
-		$scope.running = false
-		$scope.error = false
+		reset = () ->
+			$scope.files = []
+			$scope.output = {}
+			$scope.running = false
+			$scope.error = false
+			
 		
 		$scope.run = () ->
+			reset()
 			$scope.running = true
-			$scope.error = false
 			url = "/project/#{$scope.project_id}/compile"
 			$http
 				.post(url, {
@@ -29,7 +31,7 @@ define [
 					
 		parseOutputFiles = (files = []) ->
 			return files.map (file) ->
-				file.url = "/project/#{ide.project_id}/output/#{file.path}"
+				file.url = "/project/#{ide.project_id}/output/#{file.path}?cache_bust=#{Date.now()}"
 				file.type = "unknown"
 				parts = file.path.split(".")
 				if parts.length == 1
