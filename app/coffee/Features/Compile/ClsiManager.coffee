@@ -58,7 +58,7 @@ module.exports = ClsiManager =
 				type: file.type
 		return outputFiles
 
-	VALID_COMPILERS: ["pdflatex", "latex", "xelatex", "lualatex", "python"]
+	VALID_COMPILERS: ["pdflatex", "latex", "xelatex", "lualatex", "python", "r"]
 	_buildRequest: (project_id, options={}, callback = (error, request) ->) ->
 		Project.findById project_id, {compiler: 1, rootDoc_id: 1}, (error, project) ->
 			return callback(error) if error?

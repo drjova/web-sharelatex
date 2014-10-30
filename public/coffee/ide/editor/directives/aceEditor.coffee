@@ -38,6 +38,7 @@ define [
 				navigateHighlights: "="
 				onCtrlEnter: "="
 				aceMode: "="
+				wrapLines: "="
 			}
 			link: (scope, element, attrs) ->
 				# Don't freak out if we're already in an apply callback
@@ -155,14 +156,19 @@ define [
 					if text?
 						editor.setValue(text, -1)
 						session = editor.getSession()
-						session.setUseWrapMode(true)
+						session.setUseWrapMode(scope.wrapLines)
 						session.setMode("ace/mode/#{scope.aceMode}")
 						
 				scope.$watch "aceMode", (mode) ->
 					if mode?
 						session = editor.getSession()
 						session.setMode("ace/mode/#{mode}")
-
+						
+				scope.$watch "wrapLines", (wrap) ->
+					if wrap?
+						session = editor.getSession()
+						session.setUseWrapMode(wrap)
+						
 				scope.$watch "annotations", (annotations) ->
 					session = editor.getSession()
 					session.setAnnotations annotations
@@ -174,7 +180,7 @@ define [
 
 				resetSession = () ->
 					session = editor.getSession()
-					session.setUseWrapMode(true)
+					session.setUseWrapMode(scope.wrapLines)
 					session.setMode("ace/mode/#{scope.aceMode}")
 					session.setAnnotations scope.annotations
 

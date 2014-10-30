@@ -101,14 +101,18 @@ define [
 			document.off()
 			
 		_getEditorModeFromDoc: (doc) ->
-			if doc.name.match(/\.py$/)
+			extension = doc.name.split(".").pop()?.toLowerCase()
+			if extension in ["py", "r"]
 				return "script"
 			else
 				return "latex"
 				
 		_getAceModeFromDoc: (doc) ->
-			if doc.name.match(/\.py$/)
+			extension = doc.name.split(".").pop()?.toLowerCase()
+			if extension == "py"
 				return "python"
+			else if extension == "r"
+				return "r"
 			else
 				return "latex"
 

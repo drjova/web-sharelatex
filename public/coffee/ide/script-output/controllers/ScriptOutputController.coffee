@@ -12,14 +12,14 @@ define [
 		$scope.run = () ->
 			reset()
 			$scope.running = true
-			url = "/project/#{$scope.project_id}/compile"
-			$http
-				.post(url, {
-					_csrf: window.csrfToken
-					# Always compile the open doc in this case
-					rootDoc_id: $scope.editor.open_doc_id
-					compiler: "python"
-				})
+			
+			compiler = "python"
+			extension = $scope.editor.open_doc.name.split(".").pop()?.toLowerCase()
+			if extension == "r"
+				compiler = "r"
+			rootDoc_id = $scope.editor.open_doc_id
+				
+			doCompile(rootDoc_id, compiler)
 				.success (data) ->
 					$scope.running = false
 					$scope.files = parseOutputFiles(data?.outputFiles)
@@ -29,9 +29,19 @@ define [
 					$scope.running = false
 					$scope.error = true
 					
+		doCompile = (rootDoc_id, compiler) ->
+			url = "/project/#{$scope.project_id}/compile"
+			$http
+				.post(url, {
+					_csrf: window.csrfToken
+					# Always compile the open doc in this case
+					rootDoc_id: rootDoc_id
+					compiler: compiler
+				})
+					
 		parseOutputFiles = (files = []) ->
 			return files.map (file) ->
-				file.url = "/project/#{ide.project_id}/output/#{file.path}?cache_bust=#{Date.now()}"
+				file.url = "/project/#{$scope.project_id}/output/#{file.path}?cache_bust=#{Date.now()}"
 				file.type = "unknown"
 				parts = file.path.split(".")
 				if parts.length == 1
@@ -40,5 +50,6 @@ define [
 					extension = parts[parts.length - 1]
 				if extension in ["png", "jpg", "jpeg", "svg", "gif"]
 					file.type = "image"
-					
+				else if extension in ["pdf"]
+					file.type = "pdf"
 				return file

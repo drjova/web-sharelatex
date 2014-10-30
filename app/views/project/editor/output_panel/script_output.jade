@@ -19,6 +19,13 @@ div.full-size(ng-controller="ScriptOutputController")
 		
 		.output-file.card.card-thin.row-spaced-small(ng-repeat="file in files")
 			.page-header.output-file-page-header {{ file.path }}
-			img(ng-if="file.type == 'image'", ng-src="{{file.url}}")
+			img(
+				ng-if="file.type == 'image'"
+				ng-src="{{ file.url }}"
+			)
+			iframe(
+				ng-if="file.type == 'pdf'"
+				ng-src="{{ file.url }}"
+			)
 			p.output-file-download-link.text-center(ng-if="file.type != 'image'")
 				a(ng-href="{{file.url}}", target="_blank") Download
