@@ -40,61 +40,65 @@ define [
 				})
 					
 		parseAndLoadOutputFiles = (files = []) ->
-			files = files.map (file) ->
-				file.url = "/project/#{$scope.project_id}/output/#{file.path}?cache_bust=#{Date.now()}"
-				file.type = "unknown"
-				parts = file.path.split(".")
-				if parts.length == 1
-					extension = null
-				else
-					extension = parts[parts.length - 1].toLowerCase()
-				if extension in ["png", "jpg", "jpeg", "svg", "gif"]
-					file.type = "image"
-				else if extension in ["pdf"]
-					file.type = "pdf"
-				else if extension in ["rout"]
-					file.type = "text"
-					
-				if file.type == "text"
-					loadOutputFile(file)
-					
-				return file
-				
-			return sortOutputFiles(files)
+			return files
+				.map(parseOutputFile)
+				.map(loadOutputFile)
+				.filter(shouldShowOutputFile)
+				.sort(sortOutputFiles)
+			
+		parseOutputFile = (file) ->
+			file.url = "/project/#{$scope.project_id}/output/#{file.path}?cache_bust=#{Date.now()}"
+			file.type = "unknown"
+			parts = file.path.split(".")
+			if parts.length == 1
+				extension = null
+			else
+				extension = parts[parts.length - 1].toLowerCase()
+			file.ext = extension
+			if extension in ["png", "jpg", "jpeg", "svg", "gif"]
+				file.type = "image"
+			else if extension in ["pdf"]
+				file.type = "pdf"
+			else if extension in ["rout"]
+				file.type = "text"
+			return file
 			
 		loadOutputFile = (file) ->
-			file.loading = true
-			$http.get(file.url)
-				.success (content) ->
-					file.loading = false
-					file.content = content
+			if file.type == "text"
+				file.loading = true
+				$http.get(file.url)
+					.success (content) ->
+						file.loading = false
+						file.content = content
+			return file
+					
+		shouldShowOutputFile = (file) ->
+			# The latex files are left over after a LaTeX compilation and not needed.
+			file.ext not in ["pyc", "aux", "fdb_latexmk", "fls"]
+		
+		PRIORITIES = {
+			"rout": 1
+			"png": 2
+			"jpg": 2
+			"jpeg": 2
+			"gif": 2
+			"svg": 2
+			"pdf": 2
+		}
+		sortOutputFiles = (a, b) ->
+			# Sort first by extension
+			priorityA = PRIORITIES[a.ext] or 100
+			priorityB = PRIORITIES[b.ext] or 100
+			result = (priorityA - priorityB)
 			
-		sortOutputFiles = (files = []) ->
-			priorities = {
-				"rout": 1
-				"png": 2
-				"jpg": 2
-				"jpeg": 2
-				"gif": 2
-				"svg": 2
-				"pdf": 2
-			}
-			return files.sort (a, b) ->
-				# Sort first by extension
-				extA = a.path.split(".").pop()?.toLowerCase()
-				extB = b.path.split(".").pop()?.toLowerCase()
-				priorityA = priorities[extA] or 100
-				priorityB = priorities[extB] or 100
-				result = (priorityA - priorityB)
-				
-				# Then name
-				if result == 0
-					if a.name > b.name
-						result = -1
-					else if a.name < b.name
-						result = 1
-				
-				return result
+			# Then name
+			if result == 0
+				if a.name > b.name
+					result = -1
+				else if a.name < b.name
+					result = 1
+			
+			return result
 						
 						
 				
