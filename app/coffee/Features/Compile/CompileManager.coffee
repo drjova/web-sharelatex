@@ -40,7 +40,6 @@ module.exports = CompileManager =
 								return callback(error) if error?
 								logger.log files: outputFiles, "output files"
 								callback(null, status, outputFiles, output)
-
 	getProjectCompileLimits: (project_id, callback = (error, limits) ->) ->
 		Project.findById project_id, {owner_ref: 1}, (error, project) ->
 			return callback(error) if error?
@@ -53,7 +52,7 @@ module.exports = CompileManager =
 					cpu_shares: owner.features?.compileCpuShares || Settings.defaultFeatures.compileCpuShares
 					memory: owner.features?.compileMemory || Settings.defaultFeatures.compileMemory
 				}
-
+			
 	getLogLines: (project_id, callback)->
 		Metrics.inc "editor.raw-logs"
 		ClsiManager.getLogLines project_id, (error, logLines)->

@@ -27,7 +27,6 @@ describe "CompileController", ->
 			"logger-sharelatex": @logger = { log: sinon.stub(), error: sinon.stub() }
 			"../../infrastructure/Metrics": @Metrics =  { inc: sinon.stub() }
 			"./CompileManager":@CompileManager
-			"../User/UserGetter":@UserGetter
 			"./ClsiManager": @ClsiManager
 			"../Authentication/AuthenticationController": @AuthenticationController = {}
 		@project_id = "project-id"

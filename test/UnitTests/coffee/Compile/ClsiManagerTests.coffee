@@ -124,7 +124,13 @@ describe "ClsiManager", ->
 
 		describe "with a valid project", ->
 			beforeEach (done) ->
-				@ClsiManager._buildRequest @project_id, {timeout:100}, (error, request) =>
+				options = {
+					timeout:    @timeout = 42
+					memory:     @memory = 1024
+					processes:  @processes = 57
+					cpu_shares: @cpu_shares = 456
+				}
+				@ClsiManager._buildRequest @project_id, options, (error, request) =>
 					@request = request
 					done()
 
@@ -148,7 +154,10 @@ describe "ClsiManager", ->
 					compile:
 						options:
 							compiler: @compiler
-							timeout : 100
+							timeout : @timeout
+							memory:     @memory
+							processes:  @processes
+							cpu_shares: @cpu_shares
 						rootResourcePath: "main.tex"
 						resources: [{
 							path:    "main.tex"

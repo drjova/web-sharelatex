@@ -13,11 +13,15 @@ div.full-size(ng-controller="ScriptOutputController")
 			span(ng-show="running") #{translate("running")}...
 			
 	div.script-output
-		pre.output.stdout.row-spaced-small(ng-if="output.stdout && output.stdout != ''") {{ output.stdout }}
+		.alert.alert-danger(ng-show="error")
+			strong #{translate("server_error")} 
+			span #{translate("somthing_went_wrong_compiling")}
+
+		pre.output.stdout(ng-if="output.stdout && output.stdout != ''") {{ output.stdout }}
 		
-		pre.output.stderr.row-spaced-small(ng-if="output.stderr && output.stderr != ''") {{ output.stderr }}
+		pre.output.stderr(ng-if="output.stderr && output.stderr != ''") {{ output.stderr }}
 		
-		.output-file.card.card-thin.row-spaced-small(ng-repeat="file in files")
+		.output-file.card.card-thin(ng-repeat="file in files")
 			.page-header.output-file-page-header {{ file.path }}
 			img(
 				ng-if="file.type == 'image'"

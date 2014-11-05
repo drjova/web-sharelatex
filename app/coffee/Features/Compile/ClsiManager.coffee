@@ -104,8 +104,11 @@ module.exports = ClsiManager =
 						callback null, {
 							compile:
 								options:
-									compiler: compiler
-									timeout: options.timeout
+									compiler:   compiler
+									timeout:    options.timeout
+									memory:     options.memory
+									cpu_shares: options.cpu_shares
+									processes:  options.processes
 								rootResourcePath: rootResourcePath
 								resources: resources
 						}

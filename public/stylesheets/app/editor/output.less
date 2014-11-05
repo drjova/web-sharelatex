@@ -146,12 +146,13 @@
 	overflow: auto;
 	background-color: @gray-lightest;
 	padding: @line-height-computed / 2;
-	padding-top: 0;
 	
 	pre.output {
 		font-size: 14px;
 		white-space: pre-wrap;
 		word-wrap: break-word;
+		margin-top: 0;
+		margin-bottom: @line-height-computed / 2;
 		&.stdout {
 			color: black;
 		}
@@ -161,6 +162,8 @@
 	}
 	
 	.output-file {
+		margin-bottom: @line-height-computed / 2;
+		
 		.output-file-page-header {
 			margin-bottom: 0;
 			padding-bottom: @line-height-computed / 4;
