@@ -17,9 +17,13 @@ div.full-size(ng-controller="ScriptOutputController")
 			strong #{translate("server_error")} 
 			span #{translate("somthing_went_wrong_compiling")}
 
-		pre.output.stdout(ng-if="output.stdout && output.stdout != ''") {{ output.stdout }}
+		.output-file.card.card-thin(ng-if="output.stdout && output.stdout != ''")
+			.page-header.output-file-page-header #{translate("output")}
+			pre.output.stdout {{ output.stdout }}
 		
-		pre.output.stderr(ng-if="output.stderr && output.stderr != ''") {{ output.stderr }}
+		.output-file.card.card-thin(ng-if="output.stderr && output.stderr != ''")
+			.page-header.output-file-page-header #{translate("errors")}
+			pre.output.stderr {{ output.stderr }}
 		
 		.output-file.card.card-thin(ng-repeat="file in files")
 			.page-header.output-file-page-header {{ file.path }}
