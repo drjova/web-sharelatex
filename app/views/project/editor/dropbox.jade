@@ -22,7 +22,7 @@ script(type="text/ng-template", id="dropboxModalTemplate")
 			div(ng-show="dbState.hasDropboxFeature && dbState.userIsLinkedToDropbox")
 				p.small
 					| #{translate("this_project_will_appear_in_your_dropbox_folder_at")}
-					strong Dropbox/sharelatex/{{ project.name }}
+					strong Dropbox/datajoy/{{ project.name }}
 			div.text-center(ng-hide="dbState.hasDropboxFeature")
 				p #{translate("need_to_upgrade_for_dropbox")}
 				p(ng-controller="FreeTrialModalController")
