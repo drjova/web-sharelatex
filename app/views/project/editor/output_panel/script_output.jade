@@ -9,8 +9,8 @@ div.full-size(ng-controller="ScriptOutputController")
 				ng-class="{'fa-refresh fa-spin': running, 'fa-play': !running }"
 			)
 			| &nbsp;&nbsp;
-			span(ng-show="!running") #{translate("run")}
-			span(ng-show="running") #{translate("running")}...
+			span(ng-show="!running") Run
+			span(ng-show="running") Running...
 			
 	div.script-output
 		.alert.alert-danger(ng-show="error")
