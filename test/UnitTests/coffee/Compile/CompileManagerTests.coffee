@@ -266,3 +266,26 @@ describe "CompileManager", ->
 			@CompileManager._checkIfAutoCompileLimitHasBeenHit true, (err, canCompile)=>
 				canCompile.should.equal false
 				done()
+
+	describe "sortOutputFiles", ->
+		it "should prioritise png over others", ->
+			@CompileManager.sortOutputFiles([{
+				path: "main.csv"
+			}, {
+				path: "main.png"
+			}]).should.deep.equal [{
+				path: "main.png"
+			}, {
+				path: "main.csv"
+			}]
+
+		it "should sort alphabetically with the same extension", ->
+			@CompileManager.sortOutputFiles([{
+				path: "bbb.png"
+			}, {
+				path: "aaa.png"
+			}]).should.deep.equal [{
+				path: "aaa.png"
+			}, {
+				path: "bbb.png"
+			}]

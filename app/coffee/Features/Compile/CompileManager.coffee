@@ -94,3 +94,32 @@ module.exports = CompileManager =
 			else
 				ProjectRootDocManager.setRootDocAutomatically project_id, callback
 		
+	EXTENSION_PRIORITIES: {
+		"png":  2
+		"jpg":  2
+		"jpeg": 2
+		"pdf":  1
+	}
+	# Sort output files by extension based on the above priorities,
+	# and then alphabetically.
+	sortOutputFiles: (outputFiles) ->
+		outputFiles.sort (a,b) ->
+			aParts = a.path.split(".")
+			if aParts.length > 1
+				aExt = aParts.pop().toLowerCase()
+			aPriority = CompileManager.EXTENSION_PRIORITIES[aExt] or 0
+			bParts = b.path.split(".")
+			if bParts.length > 1
+				bExt = bParts.pop().toLowerCase()
+			bPriority = CompileManager.EXTENSION_PRIORITIES[bExt] or 0
+			if aPriority > bPriority
+				return -1
+			else if aPriority < bPriority
+				return 1
+			else if a.path < b.path
+				return -1
+			else if a.path > b.path
+				return 1
+			else return 0
+				
+				

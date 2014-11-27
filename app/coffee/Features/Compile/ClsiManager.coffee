@@ -64,12 +64,6 @@ module.exports = ClsiManager =
 			return callback(error) if error?
 			return callback(new Errors.NotFoundError("project does not exist: #{project_id}")) if !project?
 
-			compiler = project.compiler
-			if options.compiler?
-				compiler = options.compiler
-			if compiler not in ClsiManager.VALID_COMPILERS
-				compiler = "pdflatex"
-
 			ProjectEntityHandler.getAllDocs project_id, (error, docs = {}) ->
 				return callback(error) if error?
 				ProjectEntityHandler.getAllFiles project_id, (error, files = {}) ->
@@ -101,6 +95,17 @@ module.exports = ClsiManager =
 					if !rootResourcePath?
 						callback new Error("no root document exists")
 					else
+						compiler = project.compiler
+						if options.compiler?
+							compiler = options.compiler
+						else if rootResourcePath.match(/\.R$/)
+							compiler = "r"
+						else if rootResourcePath.match(/\.py$/)
+							compiler = "python"
+
+						if compiler not in ClsiManager.VALID_COMPILERS
+							compiler = "pdflatex"
+
 						callback null, {
 							compile:
 								options:
