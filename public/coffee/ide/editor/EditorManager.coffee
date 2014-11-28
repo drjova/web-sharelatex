@@ -26,10 +26,11 @@ define [
 
 		autoOpenDoc: () ->
 			open_doc_id = 
-				$.localStorage("doc.open_id.#{@$scope.project_id}") or
-				@$scope.project.rootDoc_id
-			return if !open_doc_id?
-			doc = @ide.fileTreeManager.findEntityById(open_doc_id)
+				$.localStorage("doc.open_id.#{@$scope.project_id}") or @$scope.project.rootDoc_id
+			if !open_doc_id?
+				doc = @ide.fileTreeManager.findEntityById(open_doc_id)
+			if !doc?
+				doc = @ide.fileTreeManager.getAllActiveDocs()[0]
 			return if !doc?
 			@openDoc(doc)
 
