@@ -16,6 +16,10 @@ div.full-size(ng-controller="ScriptOutputController")
 		.alert.alert-danger(ng-show="error")
 			strong #{translate("server_error")} 
 			span #{translate("somthing_went_wrong_compiling")}
+
+		.alert.alert-danger(ng-show="timedout")
+			strong #{translate("timedout")}. 
+			span #{translate("proj_timed_out_reason")}
 		
 		.output-file.card.card-thin(ng-repeat="file in files")
 			.page-header.output-file-page-header {{ file.path }}

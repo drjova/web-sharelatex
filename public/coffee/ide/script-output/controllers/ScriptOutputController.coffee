@@ -7,6 +7,7 @@ define [
 			$scope.output = {}
 			$scope.running = false
 			$scope.error = false
+			$scope.timedout = false
 			
 		
 		$scope.run = () ->
@@ -24,7 +25,9 @@ define [
 					$scope.running = false
 					$scope.files = parseAndLoadOutputFiles(data?.outputFiles)
 					$scope.output = data?.output
-					
+					if data?.status == "timedout"
+						$scope.timedout = true
+
 				.error () ->
 					$scope.running = false
 					$scope.error = true
