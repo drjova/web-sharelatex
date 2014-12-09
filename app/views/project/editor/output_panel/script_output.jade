@@ -16,14 +16,6 @@ div.full-size(ng-controller="ScriptOutputController")
 		.alert.alert-danger(ng-show="error")
 			strong #{translate("server_error")} 
 			span #{translate("somthing_went_wrong_compiling")}
-
-		.output-file.card.card-thin(ng-if="output.stdout && output.stdout != ''")
-			.page-header.output-file-page-header #{translate("output")}
-			pre.output.stdout {{ output.stdout }}
-		
-		.output-file.card.card-thin(ng-if="output.stderr && output.stderr != ''")
-			.page-header.output-file-page-header #{translate("errors")}
-			pre.output.stderr {{ output.stderr }}
 		
 		.output-file.card.card-thin(ng-repeat="file in files")
 			.page-header.output-file-page-header {{ file.path }}
@@ -44,3 +36,11 @@ div.full-size(ng-controller="ScriptOutputController")
 				pre(ng-show="!file.loading") {{ file.content }}
 			p.output-file-download-link.text-center(ng-if="file.type != 'image'")
 				a(ng-href="{{file.url}}", target="_blank") Download
+
+		.output-file.card.card-thin(ng-if="output.stdout && output.stdout != ''")
+			.page-header.output-file-page-header Output
+			pre.output.stdout {{ output.stdout }}
+		
+		.output-file.card.card-thin(ng-if="output.stderr && output.stderr != ''")
+			.page-header.output-file-page-header Errors
+			pre.output.stderr {{ output.stderr }}
