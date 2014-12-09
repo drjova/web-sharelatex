@@ -13,6 +13,11 @@ div.full-size(ng-controller="ScriptOutputController")
 			span(ng-show="running") Running...
 			
 	div.script-output
+		.script-uncompiled(ng-show="uncompiled")
+			| &nbsp;
+			i.fa.fa-level-up.fa-flip-horizontal.fa-2x
+			| &nbsp;&nbsp;Click here to run your script!
+	
 		.alert.alert-danger(ng-show="error")
 			strong #{translate("server_error")} 
 			span #{translate("somthing_went_wrong_compiling")}

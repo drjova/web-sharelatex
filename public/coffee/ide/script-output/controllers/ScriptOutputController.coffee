@@ -9,10 +9,12 @@ define [
 			$scope.error = false
 			$scope.timedout = false
 			
+		$scope.uncompiled = true
 		
 		$scope.run = () ->
 			reset()
 			$scope.running = true
+			$scope.uncompiled = false
 			
 			compiler = "python"
 			extension = $scope.editor.open_doc.name.split(".").pop()?.toLowerCase()
