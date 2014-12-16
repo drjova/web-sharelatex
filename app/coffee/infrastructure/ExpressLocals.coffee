@@ -110,11 +110,13 @@ module.exports = (app)->
 
 	app.use (req, res, next)->
 		if req.session.user?
-			res.locals.analytics_user =
+			res.locals.intercom_user =
+				user_id: req.session.user._id
 				email: req.session.user.email
-				first_name: req.session.user.first_name
-				last_name: req.session.user.last_name
-				signUpDate: req.session.user.signUpDate
+				name: req.session.user.first_name
+				app_id: Settings.analytics?.intercom?.app_id
+			if req.session.user.signUpDate?
+				res.locals.intercom_user.created_at = new Date(req.session.user.signUpDate).getTime()
 			if req.session.justRegistered
 				res.locals.justRegistered = true
 				delete req.session.justRegistered
@@ -123,7 +125,6 @@ module.exports = (app)->
 				delete req.session.justLoggedIn
 		res.locals.gaToken       = Settings.analytics?.ga?.token
 		res.locals.tenderUrl     = Settings.tenderUrl
-		res.locals.intercomAppId = Settings.analytics?.intercom?.app_id
 		next()
 
 	app.use (req, res, next) ->
