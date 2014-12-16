@@ -110,10 +110,11 @@ module.exports = (app)->
 
 	app.use (req, res, next)->
 		if req.session.user?
-			res.locals.user =
+			res.locals.analytics_user =
 				email: req.session.user.email
 				first_name: req.session.user.first_name
 				last_name: req.session.user.last_name
+				signUpDate: req.session.user.signUpDate
 			if req.session.justRegistered
 				res.locals.justRegistered = true
 				delete req.session.justRegistered
@@ -122,6 +123,7 @@ module.exports = (app)->
 				delete req.session.justLoggedIn
 		res.locals.gaToken       = Settings.analytics?.ga?.token
 		res.locals.tenderUrl     = Settings.tenderUrl
+		res.locals.intercomAppId = Settings.analytics?.intercom?.app_id
 		next()
 
 	app.use (req, res, next) ->
