@@ -115,8 +115,6 @@ module.exports = (app)->
 				email: req.session.user.email
 				name: req.session.user.first_name
 				app_id: Settings.analytics?.intercom?.app_id
-			if req.session.user.signUpDate?
-				res.locals.intercom_user.created_at = new Date(req.session.user.signUpDate).getTime()
 			if req.session.justRegistered
 				res.locals.justRegistered = true
 				delete req.session.justRegistered
