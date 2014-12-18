@@ -44,6 +44,14 @@ aside#left-menu.full-size(
 	form.settings(ng-controller="SettingsController", ng-show="!anonymous")
 		.containter-fluid
 			.form-controls
+				label(for="autoComplete") #{translate("auto_complete")}
+				select(
+					name="autoComplete"
+					ng-model="settings.autoComplete"
+					ng-options="o.v as o.n for o in [{ n: 'On', v: true }, { n: 'Off', v: false }]"
+				)
+
+			.form-controls
 				label(for="theme") #{translate("theme")}
 				select(
 					name="theme"
