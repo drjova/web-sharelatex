@@ -36,7 +36,6 @@ define [
 				readOnly: "="
 				annotations: "="
 				navigateHighlights: "="
-				onCtrlEnter: "="
 				aceMode: "="
 				wrapLines: "="
 			}
@@ -109,14 +108,13 @@ define [
 							editor.insert("\\textit{" + text + "}")
 					readOnly: false
 
-				scope.$watch "onCtrlEnter", (callback) ->
-					if callback?
-						editor.commands.addCommand 
-							name: "compile",
-							bindKey: win: "Ctrl-Enter", mac: "Command-Enter"
-							exec: (editor) =>
-								callback()
-							readOnly: true
+				editor.commands.addCommand
+					name: "compile",
+					bindKey: win: "Ctrl-Enter", mac: "Command-Enter"
+					exec: (editor) =>
+						event = "#{scope.name}:recompile"
+						$rootScope.$broadcast event
+					readOnly: true
 
 				# Make '/' work for search in vim mode.
 				editor.showCommandLine = (arg) =>

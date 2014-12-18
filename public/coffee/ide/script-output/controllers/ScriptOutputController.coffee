@@ -11,7 +11,12 @@ define [
 			
 		$scope.uncompiled = true
 		
+		$scope.$on "editor:recompile", () ->
+			$scope.run()
+		
 		$scope.run = () ->
+			return if $scope.running
+			
 			reset()
 			$scope.running = true
 			$scope.uncompiled = false
