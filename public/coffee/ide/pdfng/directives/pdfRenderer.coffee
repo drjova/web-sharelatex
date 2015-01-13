@@ -25,6 +25,10 @@ define [
 				@pdfjs.catch (exception) =>
 					# console.log 'ERROR in get document', exception
 					@errorCallback(exception)
+				@document.then (pdfDocument) =>
+					pdfDocument.getDownloadInfo().then () =>
+						@options.loadedCallback()
+
 			resetState: () ->
 				@complete = []
 				@timeout = []

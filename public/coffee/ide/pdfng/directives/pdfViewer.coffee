@@ -38,6 +38,8 @@ define [
 				errorCallback: (error) ->
 					Raven.captureMessage?('pdfng error ' + error)
 					$scope.$emit 'pdf:error', error
+				loadedCallback: () ->
+					$scope.$emit 'loaded'
 			})
 
 			# we will have all the main information needed to start display
@@ -54,7 +56,6 @@ define [
 					]
 					# console.log 'resolved q.all, page size is', result
 					$scope.numPages = result.numPages
-					$scope.$emit "loaded"
 
 		@setScale = (scale, containerHeight, containerWidth) ->
 			$scope.loaded.then () ->
