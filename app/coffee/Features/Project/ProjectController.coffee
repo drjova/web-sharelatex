@@ -11,7 +11,7 @@ User = require('../../models/User').User
 TagsHandler = require("../Tags/TagsHandler")
 SubscriptionLocator = require("../Subscription/SubscriptionLocator")
 LimitationsManager = require("../Subscription/LimitationsManager")
-_ = require("underscore")
+_ = require "underscore"
 Settings = require("settings-sharelatex")
 SecurityManager = require("../../managers/SecurityManager")
 fs = require "fs"
@@ -98,10 +98,7 @@ module.exports = ProjectController =
 				else if template == 'basic'
 					projectCreationHandler.createBasicProject user._id, projectName, cb
 				else
-					# Check if the template is contained in the Settings.templates
-					project_names = _.pluck(Settings.templatedProjects, 'name')
-					if _.contains(template, project_names)
-						logger.log templated: template "creating templated project"
+					if Settings.templates
 						projectCreationHandler.createTemplatedProject user._id, projectName, template, cb
 		], (err, project)->
 			if err?

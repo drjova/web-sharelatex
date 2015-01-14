@@ -19,13 +19,20 @@
 		li
 			a(
 				href,
-				ng-click="openCreateProjectModal('yellowpages')"
-			) #{translate("example_project")}
+				ng-click="openUploadProjectModal()"
+			) #{translate("upload_project")}
+		li.divider
+		li.dropdown-header #{translate("templates")}
 		li
 			a(
 				href,
-				ng-click="openUploadProjectModal()"
-			) #{translate("upload_project")}
+				ng-click="openCreateProjectModal('yellowpages')"
+			) Yellowpages
+		li
+			a(
+				href,
+				ng-click="openCreateProjectModal('coauthoring')"
+			) Coauthoring
 		!{moduleIncludes("newProjectMenu", locals)}
 		if (templates)
 			li.divider

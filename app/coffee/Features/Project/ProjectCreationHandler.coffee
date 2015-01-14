@@ -60,39 +60,45 @@ module.exports =
 			], (error) ->
 				callback(error, project)
 
-	createTemplatedProject: (owner_id, projectName, templateName, callback = (error, project) ->)->
+	createTemplatedProject: (owner_id, projectName, templateName, done = (error, project) ->)->
 		self = @
 		@createBlankProject owner_id, projectName, (error, project)->
 			return callback(error) if error?
-			# Example url = /templates/yellowpages/
 			templatePath = Path.resolve(__dirname + "/../../../templates/#{templateName}")
 			logger.log "creating templated project", templatePath
-			fs.readdir templatePath, (error, files) ->
-				return callback(error) if error?
-				for file in files
-					extension = Path.extname(file)
-					if _.contains(['.tex', '.bib', '.cls'], extension)
-						async.series[
-							(callback) ->
-								self._buildTemplate file, owner_id, projectName, templateName  (error, docLines)->
+
+			async.waterfall [
+				(get_files) ->
+					fs.readdir templatePath, (error, files) ->
+						return get_files(error) if error?
+						get_files null, files
+				(files, done_reading) ->
+					async.eachSeries files, (file, callback) ->
+						extension = Path.extname(file)
+						if _.contains ['.tex'], extension
+							self._buildTemplate file, owner_id, projectName, templateName, (error, docLines)->
+								return callback(error) if error?
+								ProjectEntityHandler.addDoc project._id, project.rootFolder[0]._id, file, docLines, (error, doc)->
 									return callback(error) if error?
-									ProjectEntityHandler.addDoc project._id, project.rootFolder[0]._id, file, docLines, (error, doc)->
-										callback(error)
-						], (error) ->
-							callback(error, project)
-					else
-						async.series[
-							(callback) ->
-								file_path = Path.resolve(templatePath+"/#{file}")
-								ProjectEntityHandler.addFile project._id, project.rootFolder[0]._id, file, file_path, callback
-						], (error) ->
-							callback(error, project)
+									ProjectEntityHandler.setRootDoc project._id, doc._id, callback
+						else if _.contains ['.bib'], extension
+							self._buildTemplate file, owner_id, projectName, templateName, (error, docLines)->
+								return callback(error) if error?
+								ProjectEntityHandler.addDoc project._id, project.rootFolder[0]._id, file, docLines, (error, doc)->
+									callback(error)
+						else
+							logger.error file: file, error: templatePath,  file + " this is the path, now I will kill myself"
+							file_path = Path.resolve(templatePath+"/#{file}")
+							ProjectEntityHandler.addFile project._id, project.rootFolder[0]._id, file, file_path, callback
+					, (error) ->
+						done_reading(error, project)
+			], (error) ->
+				done(error, project)
 
 	_buildTemplate: (template_name, user_id, project_name, project_template_name, callback = (error, output) ->)->
 		User.findById user_id, "first_name last_name", (error, user)->
 			return callback(error) if error?
 			monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]
-			#templatePath = Path.resolve(__dirname + "/../../../templates/project_files/#{template_name}")
 			templatePath = Path.resolve(__dirname + "/../../../templates/#{project_template_name}/#{template_name}")
 			fs.readFile templatePath, (error, template) ->
 				return callback(error) if error?

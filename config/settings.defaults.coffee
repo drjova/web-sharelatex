@@ -321,9 +321,12 @@ module.exports =
 #		name : "view_all",
 #		url : "/templates"
 #	}]
-	templatedProjects: [{
+	templates: [{
 		name: "yellowpages",
 		url: "/templates/yellowpages"
+	}, {
+		name: "coauthoring",
+		url: "/templates/coauthoring"
 	}]
 
 	redirects:
