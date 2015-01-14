@@ -100,10 +100,10 @@ module.exports =
 			subdomain: ""
 		geoIpLookup:
 			url: "http://localhost:8080/json"
-			
+
 	templates:
 		user_id: process.env.TEMPLATES_USER_ID or "5395eb7aad1f29a88756c7f2"
-		
+
 	# The websocket layer of ShareLaTeX runs as separate service.
 	# When running locally or in development, you can point the client to this
 	# service directly. If you are running behind a reverse proxy (Nginx, etc)
@@ -153,7 +153,7 @@ module.exports =
 
 	# i18n
 	# ------
-	# 
+	#
 	i18n:
 		subdomainLang:
 			www: {lngCode:"en", url: siteUrl}
@@ -162,7 +162,7 @@ module.exports =
 	# Spelling languages
 	# ------------------
 	#
-	# You must have the corresponding aspell package installed to 
+	# You must have the corresponding aspell package installed to
 	# be able to use a language.
 	languages: [
 		{name: "English", code: "en"},
@@ -199,7 +199,7 @@ module.exports =
 	# analytics:
 	# 	ga:
 	# 		token: ""
-	# 
+	#
 	# ShareLaTeX's help desk is provided by tenderapp.com
 	# tenderUrl: ""
 	#
@@ -242,11 +242,11 @@ module.exports =
 		# them to disk here).
 		dumpFolder: Path.resolve __dirname + "/../data/dumpFolder"
 		uploadFolder: Path.resolve __dirname + "/../data/uploads"
-	
+
 	# Automatic Snapshots
 	# -------------------
 	automaticSnapshots:
-		# How long should we wait after the user last edited to 
+		# How long should we wait after the user last edited to
 		# take a snapshot?
 		waitTimeAfterLastEdit: 5 * minutes
 		# Even if edits are still taking place, this is maximum
@@ -298,7 +298,7 @@ module.exports =
 				url: "/logout"
 			}]
 		}]
-	
+
 #	templates: [{
 #		name : "cv_or_resume",
 #		url : "/templates/cv"
@@ -321,11 +321,14 @@ module.exports =
 #		name : "view_all",
 #		url : "/templates"
 #	}]
-
+	templatedProjects: [{
+		name: "yellowpages",
+		url: "/templates/yellowpages"
+	}]
 
 	redirects:
 		"/templates/index": "/templates/"
 
 	proxyUrls: {}
-	
+
 	reloadModuleViewsOnEachRequest: true

@@ -2,7 +2,7 @@ logger = require('logger-sharelatex')
 async = require("async")
 metrics = require('../../infrastructure/Metrics')
 Settings = require('settings-sharelatex')
-ObjectId = require('mongoose').Types.ObjectId	
+ObjectId = require('mongoose').Types.ObjectId
 Project = require('../../models/Project').Project
 Folder = require('../../models/Folder').Folder
 ProjectEntityHandler = require('./ProjectEntityHandler')
@@ -31,7 +31,7 @@ module.exports =
 		self = @
 		@createBlankProject owner_id, projectName, (error, project)->
 			return callback(error) if error?
-			self._buildTemplate "mainbasic.tex", owner_id, projectName, (error, docLines)->
+			self._buildTemplate "mainbasic.tex", owner_id, projectName, "project_files",  (error, docLines)->
 				return callback(error) if error?
 				ProjectEntityHandler.addDoc project._id, project.rootFolder[0]._id, "main.tex", docLines, (error, doc)->
 					return callback(error) if error?
@@ -44,13 +44,13 @@ module.exports =
 			return callback(error) if error?
 			async.series [
 				(callback) ->
-					self._buildTemplate "main.tex", owner_id, projectName, (error, docLines)->
+					self._buildTemplate "main.tex", owner_id, projectName, "project_files", (error, docLines)->
 						return callback(error) if error?
 						ProjectEntityHandler.addDoc project._id, project.rootFolder[0]._id, "main.tex", docLines, (error, doc)->
 							return callback(error) if error?
 							ProjectEntityHandler.setRootDoc project._id, doc._id, callback
 				(callback) ->
-					self._buildTemplate "references.bib", owner_id, projectName, (error, docLines)->
+					self._buildTemplate "references.bib", owner_id, projectName, "project_files", (error, docLines)->
 						return callback(error) if error?
 						ProjectEntityHandler.addDoc project._id, project.rootFolder[0]._id, "references.bib", docLines, (error, doc)->
 							callback(error)
@@ -60,12 +60,40 @@ module.exports =
 			], (error) ->
 				callback(error, project)
 
-	_buildTemplate: (template_name, user_id, project_name, callback = (error, output) ->)->
+	createTemplatedProject: (owner_id, projectName, templateName, callback = (error, project) ->)->
+		self = @
+		@createBlankProject owner_id, projectName, (error, project)->
+			return callback(error) if error?
+			# Example url = /templates/yellowpages/
+			templatePath = Path.resolve(__dirname + "/../../../templates/#{templateName}")
+			logger.log "creating templated project", templatePath
+			fs.readdir templatePath, (error, files) ->
+				return callback(error) if error?
+				for file in files
+					extension = Path.extname(file)
+					if _.contains(['.tex', '.bib', '.cls'], extension)
+						async.series[
+							(callback) ->
+								self._buildTemplate file, owner_id, projectName, templateName  (error, docLines)->
+									return callback(error) if error?
+									ProjectEntityHandler.addDoc project._id, project.rootFolder[0]._id, file, docLines, (error, doc)->
+										callback(error)
+						], (error) ->
+							callback(error, project)
+					else
+						async.series[
+							(callback) ->
+								file_path = Path.resolve(templatePath+"/#{file}")
+								ProjectEntityHandler.addFile project._id, project.rootFolder[0]._id, file, file_path, callback
+						], (error) ->
+							callback(error, project)
+
+	_buildTemplate: (template_name, user_id, project_name, project_template_name, callback = (error, output) ->)->
 		User.findById user_id, "first_name last_name", (error, user)->
 			return callback(error) if error?
 			monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]
-
-			templatePath = Path.resolve(__dirname + "/../../../templates/project_files/#{template_name}")
+			#templatePath = Path.resolve(__dirname + "/../../../templates/project_files/#{template_name}")
+			templatePath = Path.resolve(__dirname + "/../../../templates/#{project_template_name}/#{template_name}")
 			fs.readFile templatePath, (error, template) ->
 				return callback(error) if error?
 				data =
@@ -75,6 +103,3 @@ module.exports =
 					month: monthNames[new Date().getUTCMonth()]
 				output = _.template(template.toString(), data)
 				callback null, output.split("\n")
-
-
-

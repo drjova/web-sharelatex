@@ -95,8 +95,14 @@ module.exports = ProjectController =
 			(cb)->
 				if template == 'example'
 					projectCreationHandler.createExampleProject user._id, projectName, cb
-				else
+				else if template == 'basic'
 					projectCreationHandler.createBasicProject user._id, projectName, cb
+				else
+					# Check if the template is contained in the Settings.templates
+					project_names = _.pluck(Settings.templatedProjects, 'name')
+					if _.contains(template, project_names)
+						logger.log templated: template "creating templated project"
+						projectCreationHandler.createTemplatedProject user._id, projectName, template, cb
 		], (err, project)->
 			if err?
 				logger.error err: err, project: project, user: user, name: projectName, templateType: template, "error creating project"
@@ -167,14 +173,14 @@ module.exports = ProjectController =
 			return res.render("general/closed", {title:"updating_site"})
 
 		if req.session.user?
-			user_id = req.session.user._id 
+			user_id = req.session.user._id
 			anonymous = false
 		else
 			anonymous = true
 			user_id = 'openUser'
-		
+
 		project_id = req.params.Project_id
-	
+
 		async.parallel {
 			project: (cb)->
 				Project.findPopulatedById project_id, cb

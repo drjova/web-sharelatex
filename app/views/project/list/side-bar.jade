@@ -9,12 +9,17 @@
 		li
 			a(
 				href,
-				ng-click="openCreateProjectModal()"
+				ng-click="openCreateProjectModal('basic')"
 			) #{translate("blank_project")}
 		li
 			a(
 				href,
 				ng-click="openCreateProjectModal('example')"
+			) #{translate("example_project")}
+		li
+			a(
+				href,
+				ng-click="openCreateProjectModal('yellowpages')"
 			) #{translate("example_project")}
 		li
 			a(
@@ -55,7 +60,7 @@
 						'fa-folder-o': !tag.selected\
 					}"
 				)
-				span.name {{tag.name}} 
+				span.name {{tag.name}}
 					span.subdued  ({{tag.project_ids.length}})
 		li(ng-cloak)
 			a.tag(href, ng-click="openNewTagModal()")
@@ -78,7 +83,7 @@
 					.progress-bar.progress-bar-info(ng-style="{'width' : (percentComplete+'%')}")
 
 				p.small #{translate("profile_complete_percentage", {percentval:"{{percentComplete}}"})}
-				
+
 				button#completeUserProfileInformation.btn.btn-info(
 					ng-hide="formVisable",
 					ng-click="openUserProfileModal()"
@@ -91,5 +96,5 @@
 		p
 			a(href="/user/subscription/plans").btn.btn-primary #{translate("upgrade")}
 		p.small
-			| #{translate("or_unlock_features_bonus")} 
+			| #{translate("or_unlock_features_bonus")}
 			a(href="/user/bonus") #{translate("sharing_sl")} .
